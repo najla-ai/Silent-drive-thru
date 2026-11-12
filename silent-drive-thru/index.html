@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>نظام الطلب الصامت والبصري - الدرايف ثرو</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;900&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Tajawal', sans-serif; }
+        .hidden-section { display: none !important; }
+    </style>
+</head>
+<body class="bg-stone-900 text-stone-100 min-h-screen flex flex-col">
+
+    <!-- شريط علوي تنقلي بين واجهة العميل وشاشة الكاشير -->
+    <header class="bg-stone-950 border-b border-stone-800 py-3 px-4 flex justify-between items-center sticky top-0 z-50">
+        <div class="flex items-center space-x-3 space-x-reverse">
+            <span class="text-2xl">🚗</span>
+            <div>
+                <h1 class="font-bold text-amber-500 text-sm">نظام الطلب الصامت للدرايف ثرو</h1>
+                <p class="text-xs text-stone-400">واجهة الطلب البصري الشاملة للجميع</p>
+            </div>
+        </div>
+        <div class="flex items-center gap-2">
+            <button onclick="switchView('customer')" id="btn-customer" class="bg-amber-600 hover:bg-amber-700 text-white text-xs px-3 py-1.5 rounded-lg font-medium transition">📱 شاشة العميل</button>
+            <button onclick="switchView('pos')" id="btn-pos" class="bg-stone-800 hover:bg-stone-700 text-stone-300 text-xs px-3 py-1.5 rounded-lg font-medium transition">🖥️ معاينة الكاشير (POS)</button>
+        </div>
+    </header>
+
+    <!-- المحتوى الرئيسي -->
+    <main class="flex-1 max-w-md w-full mx-auto p-4 flex flex-col justify-between">
+
+        <!-- ================= الشاشة 1: الترحيب وبدء الطلب مباشرة ================= -->
+        <section id="screen-1" class="space-y-6 my-auto">
+            <div class="text-center space-y-3">
+                <div class="w-20 h-20 bg-amber-500/10 rounded-full flex items-center justify-center mx-auto text-amber-500 text-3xl border border-amber-500/20">☕</div>
+                <h2 class="text-2xl font-black text-amber-400">حياك الله في خدمة الدرايف ثرو</h2>
+                <p class="text-sm text-stone-300 leading-relaxed">
+                    نظام طلب بصري مريح للجميع (للصم، صعوبة النطق، أو لمن يفضل الطلب بهدوء دون كلام).
+                </p>
+            </div>
+
+            <div class="space-y-3 pt-4">
+                <button onclick="goToScreen(2)" class="w-full bg-amber-500 hover:bg-amber-600 text-stone-950 font-black py-4 rounded-xl shadow-lg transition text-base">
+                    ابدأ الطلب الصامت 🚀
+                </button>
+                
+                <div class="flex items-center justify-center gap-2 pt-2">
+                    <input type="checkbox" id="signLangToggle" class="w-4 h-4 accent-amber-500 rounded cursor-pointer">
+                    <label for="signLangToggle" class="text-xs text-stone-300 cursor-pointer">تفعيل مترجم لغة الإشارة الإرشادي (فيديو توضيحي)</label>
+                </div>
+            </div>
+        </section>
+
+        <!-- ================= الشاشة 2: قائمة الطلبات البصرية ================= -->
+        <section id="screen-2" class="hidden-section space-y-4">
+            <div class="flex justify-between items-center bg-stone-800/80 p-3 rounded-xl border border-stone-700">
+                <div>
+                    <span class="text-xs text-amber-400 block font-bold">قائمة المنتجات السريعة</span>
+                    <h3 class="font-bold text-sm">اختر ما تحب بلمسة واحدة</h3>
+                </div>
+                <button onclick="goToScreen(3)" class="bg-amber-500 hover:bg-amber-600 text-stone-950 px-4 py-2 rounded-lg font-bold text-xs flex items-center gap-1 shadow">
+                    🛒 السلة (<span id="cart-count">0</span>)
+                </button>
+            </div>
+
+            <!-- أشرطة التصنيفات -->
+            <div class="flex gap-2 overflow-x-auto pb-1 text-xs">
+                <button class="bg-amber-500 text-stone-950 px-3 py-1.5 rounded-lg font-bold whitespace-nowrap">الكل 🔥</button>
+                <button class="bg-stone-800 text-stone-300 px-3 py-1.5 rounded-lg whitespace-nowrap">قهوة ساخنة ☕</button>
+                <button class="bg-stone-800 text-stone-300 px-3 py-1.5 rounded-lg whitespace-nowrap">مشروبات باردة 🧊</button>
+                <button class="bg-stone-800 text-stone-300 px-3 py-1.5 rounded-lg whitespace-nowrap">مخبوزات 🥐</button>
+            </div>
+
+            <!-- قائمة المنتجات -->
+            <div class="space-y-3 max-h-[60vh] overflow-y-auto pr-1">
+                <!-- منتج 1 -->
+                <div class="bg-stone-800/50 border border-stone-700 p-3 rounded-xl flex items-center justify-between gap-3">
+                    <div class="w-16 h-16 bg-amber-500/10 rounded-lg flex items-center justify-center text-2xl flex-shrink-0">☕</div>
+                    <div class="flex-1">
+                        <h4 class="font-bold text-sm">لاتيه حار (Hot Latte)</h4>
+                        <p class="text-xs text-stone-400">إسبريسو مع حليب مبخر</p>
+                        <span class="text-amber-400 font-bold text-xs mt-1 block">18 ر.س</span>
+                    </div>
+                    <button onclick="addToCart('لاتيه حار', 18)" class="bg-amber-500 hover:bg-amber-600 text-stone-950 font-bold w-9 h-9 rounded-xl flex items-center justify-center text-lg shadow">+</button>
+                </div>
+
+                <!-- منتج 2 -->
+                <div class="bg-stone-800/50 border border-stone-700 p-3 rounded-xl flex items-center justify-between gap-3">
+                    <div class="w-16 h-16 bg-amber-500/10 rounded-lg flex items-center justify-center text-2xl flex-shrink-0">🧊</div>
+                    <div class="flex-1">
+                        <h4 class="font-bold text-sm">سبانش لاتيه بارد</h4>
+                        <p class="text-xs text-stone-400">إسبريسو، حليب محلى مكثف، ثلج</p>
+                        <span class="text-amber-400 font-bold text-xs mt-1 block">22 ر.س</span>
+                    </div>
+                    <button onclick="addToCart('سبانش لاتيه بارد', 22)" class="bg-amber-500 hover:bg-amber-600 text-stone-950 font-bold w-9 h-9 rounded-xl flex items-center justify-center text-lg shadow">+</button>
+                </div>
+
+                <!-- منتج 3 -->
+                <div class="bg-stone-800/50 border border-stone-700 p-3 rounded-xl flex items-center justify-between gap-3">
+                    <div class="w-16 h-16 bg-amber-500/10 rounded-lg flex items-center justify-center text-2xl flex-shrink-0">🥐</div>
+                    <div class="flex-1">
+                        <h4 class="font-bold text-sm">كرواسون زبدة</h4>
+                        <p class="text-xs text-stone-400">مخبوز طازج يومياً</p>
+                        <span class="text-amber-400 font-bold text-xs mt-1 block">12 ر.س</span>
+                    </div>
+                    <button onclick="addToCart('كرواسون زبدة', 12)" class="bg-amber-500 hover:bg-amber-600 text-stone-950 font-bold w-9 h-9 rounded-xl flex items-center justify-center text-lg shadow">+</button>
+                </div>
+            </div>
+
+            <button onclick="goToScreen(3)" class="w-full bg-stone-800 hover:bg-stone-700 text-stone-200 font-bold py-3 rounded-xl border border-stone-600 text-sm transition">
+                عرض السلة وتعديل الطلبات 🛒
+            </button>
+        </section>
+
+        <!-- ================= الشاشة 3: السلة وتعديل الكميات والملاحظات ================= -->
+        <section id="screen-3" class="hidden-section space-y-4">
+            <div class="flex justify-between items-center border-b border-stone-800 pb-2">
+                <h3 class="font-bold text-base text-amber-400">سلة الطلبات وتعديلها</h3>
+                <button onclick="goToScreen(2)" class="text-xs text-stone-400 hover:text-white underline">← إضافة منتجات أخرى</button>
+            </div>
+
+            <!-- قائمة المنتجات المختارة مع أزرار التعديل والحذف -->
+            <div id="cart-items-container" class="space-y-2 max-h-40 overflow-y-auto">
+                <!-- تعبئة برمجية -->
+            </div>
+
+            <div class="border-t border-stone-800 pt-2 flex justify-between font-bold text-sm">
+                <span>المجموع الكلي:</span>
+                <span id="cart-total" class="text-amber-400">0 ر.س</span>
+            </div>
+
+            <!-- خيارات وتفضيلات التواصل والدفع -->
+            <div class="bg-stone-800/40 p-3 rounded-xl border border-stone-700 space-y-2">
+                <label class="block text-xs font-bold text-amber-400">خيارات وتفضيلات التواصل والدفع:</label>
+                <div class="space-y-1.5 text-xs">
+                    <label class="flex items-center gap-2 cursor-pointer bg-stone-900/60 p-2 rounded-lg border border-stone-700">
+                        <input type="checkbox" checked class="accent-amber-500" id="opt-silent">
+                        <span>🤫 طلب صامت (تواصل كتابي فقط - لا ميكروفون)</span>
+                    </label>
+                    <label class="flex items-center gap-2 cursor-pointer bg-stone-900/60 p-2 rounded-lg border border-stone-700">
+                        <input type="checkbox" checked class="accent-amber-500" id="opt-pay-cash">
+                        <span>💵 الدفع نقدي (كاش) عند الشباك</span>
+                    </label>
+                    <label class="flex items-center gap-2 cursor-pointer bg-stone-900/60 p-2 rounded-lg border border-stone-700">
+                        <input type="checkbox" class="accent-amber-500" id="opt-pay-card">
+                        <span>💳 الدفع شبكة / Apple Pay عند الشباك</span>
+                    </label>
+                </div>
+            </div>
+
+            <!-- ملاحظات إضافية للكاشير -->
+            <div class="space-y-2">
+                <label class="block text-xs font-bold text-stone-300">ملاحظات إضافية للكاشير (اختياري):</label>
+                <textarea id="customer-note" rows="2" placeholder="اكتب أي طلب خاص هنا بكل بحرية (مثال: بدون سكر، حليب لوز...)" class="w-full bg-stone-800 border border-stone-700 rounded-xl p-2.5 text-xs text-white focus:outline-none focus:border-amber-500"></textarea>
+                
+                <!-- أزرار اقتراحات سريعة للملاحظات -->
+                <div class="flex flex-wrap gap-1.5">
+                    <button onclick="addNotePreset('بدون ثلج 🧊')" class="bg-stone-800 hover:bg-stone-700 text-stone-300 text-[10px] px-2 py-1 rounded-md border border-stone-700">+ بدون ثلج</button>
+                    <button onclick="addNotePreset('زيادة ثلج ❄️')" class="bg-stone-800 hover:bg-stone-700 text-stone-300 text-[10px] px-2 py-1 rounded-md border border-stone-700">+ زيادة ثلج</button>
+                    <button onclick="addNotePreset('حليب إضافي 🥛')" class="bg-stone-800 hover:bg-stone-700 text-stone-300 text-[10px] px-2 py-1 rounded-md border border-stone-700">+ حليب إضافي</button>
+                    <button onclick="addNotePreset('أحتاج مناديل زيادة 🧻')" class="bg-stone-800 hover:bg-stone-700 text-stone-300 text-[10px] px-2 py-1 rounded-md border border-stone-700">+ مناديل زيادة</button>
+                </div>
+            </div>
+
+            <button onclick="submitOrder()" class="w-full bg-amber-500 hover:bg-amber-600 text-stone-950 font-black py-3.5 rounded-xl shadow-lg transition text-sm">
+                إرسال الطلب للمقهى الآن 🚀
+            </button>
+        </section>
+
+        <!-- ================= الشاشة 4: شاشة الانتظار والمتابعة والمحادثة ================= -->
+        <section id="screen-4" class="hidden-section space-y-5 text-center my-auto">
+            <div class="w-16 h-16 bg-emerald-500/10 rounded-full flex items-center justify-center mx-auto text-emerald-400 text-2xl border border-emerald-500/20 animate-pulse">✓</div>
+            
+            <div class="space-y-1">
+                <span class="text-xs text-stone-400 bg-stone-800 px-3 py-1 rounded-full border border-stone-700 inline-block">مسار الطلب السريع</span>
+                <h3 class="text-lg font-black text-amber-400">تم إرسال طلبك بنجاح!</h3>
+                <p class="text-xs text-stone-300">رقم الطلب: <strong class="text-white">#94</strong></p>
+            </div>
+
+            <!-- صندوق المحادثة المباشرة مع الكاشير -->
+            <div class="bg-stone-800/80 p-3 rounded-xl border border-stone-700 text-right space-y-2">
+                <div class="flex justify-between items-center text-xs text-stone-400 border-b border-stone-700 pb-1">
+                    <span>💬 محادثة مباشرة مع الكاشير</span>
+                    <span class="w-2 h-2 rounded-full bg-emerald-500 animate-ping"></span>
+                </div>
+                
+                <!-- سجل المحادثة -->
+                <div id="chat-box" class="bg-stone-900 p-2.5 rounded-lg max-h-32 overflow-y-auto space-y-2 text-xs text-right">
+                    <div class="text-stone-400 text-center italic text-[11px]">بانتظار تواصل الكاشير معك...</div>
+                </div>
+
+                <!-- إرسال رد من العميل للكاشير -->
+                <div class="flex gap-2 pt-1">
+                    <input type="text" id="customer-chat-input" placeholder="اكتب رداً للكاشير..." class="flex-1 bg-stone-900 border border-stone-700 rounded-lg px-2.5 py-1.5 text-xs text-white focus:outline-none focus:border-amber-500">
+                    <button onclick="sendCustomerMessage()" class="bg-amber-500 hover:bg-amber-600 text-stone-950 font-bold px-3 py-1.5 rounded-lg text-xs">إرسال</button>
+                </div>
+            </div>
+
+            <button onclick="goToScreen(5)" class="w-full bg-stone-800 hover:bg-stone-700 text-stone-300 font-bold py-2 rounded-xl border border-stone-600 text-xs">
+                (معاينة شباك الاستلام النهائية)
+            </button>
+        </section>
+
+        <!-- ================= الشاشة 5: الاستلام والتأكيد ================= -->
+        <section id="screen-5" class="hidden-section space-y-5 text-center my-auto">
+            <div class="w-16 h-16 bg-amber-500/10 rounded-full flex items-center justify-center mx-auto text-amber-500 text-2xl border border-amber-500/20">🎉</div>
+            
+            <div class="space-y-1">
+                <h3 class="text-xl font-black text-amber-400">تفضل طلبك!</h3>
+                <p class="text-xs text-stone-300">شكراً لاختيارك نظام الطلب الصامت والبصري</p>
+            </div>
+
+            <div class="bg-stone-800/60 p-4 rounded-xl border border-stone-700 text-right space-y-2 text-xs">
+                <div class="flex justify-between font-bold text-stone-300 pb-1 border-b border-stone-700">
+                    <span>رقم الطلب: #94</span>
+                    <span class="text-amber-400">جاهز للاستلام</span>
+                </div>
+                <div id="final-items-summary" class="text-stone-400 space-y-1">
+                    <!-- تعبئة برمجية -->
+                </div>
+            </div>
+
+            <div class="space-y-2 pt-2">
+                <p class="text-xs text-stone-400">كيف كانت تجربتك اليوم؟</p>
+                <div class="flex justify-center gap-4 text-2xl">
+                    <button onclick="rateExperience('😍')" class="hover:scale-125 transition">😍</button>
+                    <button onclick="rateExperience('😐')" class="hover:scale-125 transition">😐</button>
+                    <button onclick="rateExperience('😞')" class="hover:scale-125 transition">😞</button>
+                </div>
+            </div>
+
+            <button onclick="resetApp()" class="w-full bg-amber-500 hover:bg-amber-600 text-stone-950 font-bold py-3 rounded-xl text-xs transition">
+                بدء طلب جديد 🔄
+            </button>
+        </section>
+
+        <!-- ================= شاشة الكاشير (POS Dashboard) ================= -->
+        <section id="screen-pos" class="hidden-section space-y-4">
+            <div class="bg-amber-500/10 border border-amber-500/30 p-3 rounded-xl flex justify-between items-center">
+                <div>
+                    <h3 class="font-black text-amber-400 text-sm">🖥️ لوحة تحكم الكاشير (POS)</h3>
+                    <p class="text-[10px] text-stone-300">تنبيهات الطلبات الصامتة والمحادثة الحية</p>
+                </div>
+                <span class="bg-emerald-500 text-stone-950 text-[10px] font-bold px-2 py-0.5 rounded-full animate-pulse">متصل</span>
+            </div>
+
+            <!-- صندوق الطلب الوارد -->
+            <div class="bg-stone-800 border-2 border-amber-500/50 p-4 rounded-xl space-y-3 text-right">
+                <div class="flex justify-between items-center border-b border-stone-700 pb-2">
+                    <span class="bg-amber-500 text-stone-950 font-black text-xs px-2.5 py-1 rounded-lg">سيارة قادمة</span>
+                    <span class="text-xs text-amber-400 font-bold">طلب جديد #94</span>
+                </div>
+
+                <div class="bg-red-500/10 border border-red-500/30 p-2 rounded-lg text-red-300 text-xs font-bold flex items-center gap-2">
+                    <span>⚠️</span>
+                    <span>تنبيه: طلب صامت — تواصل كتابي فقط — لا تستخدم الميكروفون!</span>
+                </div>
+
+                <div class="space-y-1 text-xs" id="pos-order-details">
+                    <p class="text-stone-400 text-center py-2">لا توجد طلبات واردة حالياً...</p>
+                </div>
+
+                <!-- ملاحظة العميل الأساسية -->
+                <div id="pos-note-box" class="bg-stone-900 p-2.5 rounded-lg border border-stone-700 text-xs hidden">
+                    <strong class="text-amber-400 block mb-1">ملاحظات العميل:</strong>
+                    <p id="pos-customer-note-text" class="text-stone-300">-</p>
+                </div>
+
+                <!-- صندوق المحادثة في شاشة الكاشير -->
+                <div class="space-y-2 pt-2 border-t border-stone-700">
+                    <span class="text-[11px] font-bold text-amber-400 block">💬 محادثة مباشرة مع السائق:</span>
+                    <div id="pos-chat-box" class="bg-stone-900 p-2.5 rounded-lg max-h-28 overflow-y-auto space-y-2 text-xs">
+                        <div class="text-stone-500 text-center italic text-[10px]">ابدأ بإرسال ملاحظة أو استفسار للعميل عند الشباك...</div>
+                    </div>
+                    
+                    <div class="flex gap-2 pt-1">
+                        <input type="text" id="pos-chat-input" placeholder="اكتب رسالة للعميل..." class="flex-1 bg-stone-900 border border-stone-700 rounded-lg px-2.5 py-1.5 text-xs text-white focus:outline-none focus:border-amber-500">
+                        <button onclick="sendPosTypedMessage()" class="bg-amber-500 hover:bg-amber-600 text-stone-950 font-bold px-3 py-1.5 rounded-lg text-xs">إرسال</button>
+                    </div>
+
+                    <!-- أزرار جاهزة سريعة للكاشير -->
+                    <div class="grid grid-cols-2 gap-1.5 pt-1">
+                        <button onclick="sendPosPreset('المنتج خلص، تحب نبدله ببديل آخر؟')" class="bg-stone-900 hover:bg-stone-700 border border-stone-700 p-1.5 rounded text-[10px] text-stone-300 text-right">🥐 خلص المنتج؟</button>
+                        <button onclick="sendPosPreset('الطلب جاهز، تفضل للشباك 🚗')" class="bg-stone-900 hover:bg-stone-700 border border-stone-700 p-1.5 rounded text-[10px] text-stone-300 text-right">✅ الطلب جاهز للشباك</button>
+                    </div>
+                </div>
+
+                <button onclick="completeOrder()" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-2.5 rounded-xl text-xs transition">
+                    إتمام وتسليم الطلب ✓
+                </button>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- الفوتر البسيط -->
+    <footer class="text-center py-2 text-[10px] text-stone-500 border-t border-stone-800">
+        نظام الدرايف ثرو البصري — مشروع تخرج وتطوير تقني 2026
+    </footer>
+
+    <!-- جافاسكريبت للتحكم بالصفحات والمحادثة الحية -->
+    <script>
+        let cart = [];
+
+        function switchView(view) {
+            document.getElementById('screen-pos').classList.add('hidden-section');
+            document.querySelectorAll('main > section').forEach(el => {
+                if(el.id !== 'screen-pos') el.classList.add('hidden-section');
+            });
+
+            document.getElementById('btn-customer').className = "bg-stone-800 hover:bg-stone-700 text-stone-300 text-xs px-3 py-1.5 rounded-lg font-medium transition";
+            document.getElementById('btn-pos').className = "bg-stone-800 hover:bg-stone-700 text-stone-300 text-xs px-3 py-1.5 rounded-lg font-medium transition";
+
+            if (view === 'pos') {
+                document.getElementById('screen-pos').classList.remove('hidden-section');
+                document.getElementById('btn-pos').className = "bg-amber-600 hover:bg-amber-700 text-white text-xs px-3 py-1.5 rounded-lg font-medium transition";
+            } else {
+                document.getElementById('screen-1').classList.remove('hidden-section');
+                document.getElementById('btn-customer').className = "bg-amber-600 hover:bg-amber-700 text-white text-xs px-3 py-1.5 rounded-lg font-medium transition";
+            }
+        }
+
+        function goToScreen(screenNum) {
+            document.querySelectorAll('main > section').forEach(el => el.classList.add('hidden-section'));
+            document.getElementById(`screen-${screenNum}`).classList.remove('hidden-section');
+            if(screenNum === 3) updateCartUI();
+            if(screenNum === 5) updateFinalSummary();
+        }
+
+        function addToCart(name, price) {
+            let existing = cart.find(item => item.name === name);
+            if(existing) {
+                existing.qty++;
+            } else {
+                cart.push({name, price, qty: 1});
+            }
+            document.getElementById('cart-count').innerText = cart.reduce((sum, item) => sum + item.qty, 0);
+            if (navigator.vibrate) navigator.vibrate(50);
+        }
+
+        function updateCartUI() {
+            let container = document.getElementById('cart-items-container');
+            let total = 0;
+            if(cart.length === 0) {
+                container.innerHTML = `<p class="text-xs text-stone-400 text-center py-4">السلة فارغة حالياً</p>`;
+                document.getElementById('cart-total').innerText = '0 ر.س';
+                return;
+            }
+            container.innerHTML = '';
+            cart.forEach((item, index) => {
+                total += item.price * item.qty;
+                container.innerHTML += `
+                    <div class="flex justify-between items-center bg-stone-900/60 p-2.5 rounded-xl border border-stone-700 text-xs">
+                        <div>
+                            <h5 class="font-bold">${item.name}</h5>
+                            <span class="text-amber-400">${item.price * item.qty} ر.س</span>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <button onclick="changeQty(${index}, -1)" class="bg-stone-800 hover:bg-stone-700 px-2.5 py-1 rounded text-stone-300 font-bold">-</button>
+                            <span class="w-4 text-center">${item.qty}</span>
+                            <button onclick="changeQty(${index}, 1)" class="bg-stone-800 hover:bg-stone-700 px-2.5 py-1 rounded text-stone-300 font-bold">+</button>
+                        </div>
+                    </div>
+                `;
+            });
+            document.getElementById('cart-total').innerText = total + ' ر.س';
+            document.getElementById('cart-count').innerText = cart.reduce((sum, item) => sum + item.qty, 0);
+        }
+
+        function changeQty(index, change) {
+            cart[index].qty += change;
+            if(cart[index].qty <= 0) {
+                cart.splice(index, 1);
+            }
+            updateCartUI();
+        }
+
+        function addNotePreset(text) {
+            let textarea = document.getElementById('customer-note');
+            textarea.value += (textarea.value ? '، ' : '') + text;
+        }
+
+        function submitOrder() {
+            if(cart.length === 0) {
+                alert('الرجاء إضافة منتج واحد على الأقل للسلة');
+                return;
+            }
+            
+            let detailsHtml = cart.map(i => `<div class="flex justify-between"><span>${i.name} (x${i.qty})</span><span>${i.price * i.qty} ر.س</span></div>`).join('');
+            document.getElementById('pos-order-details').innerHTML = detailsHtml;
+
+            let note = document.getElementById('customer-note').value;
+            let noteBox = document.getElementById('pos-note-box');
+            if(note.trim() !== "") {
+                document.getElementById('pos-customer-note-text').innerText = note;
+                noteBox.classList.remove('hidden');
+            } else {
+                noteBox.classList.add('hidden');
+            }
+
+            goToScreen(4);
+        }
+
+        // دوال المحادثة الحية بين الكاشير والعميل
+        function appendMessage(sender, text) {
+            let chatBoxes = [document.getElementById('chat-box'), document.getElementById('pos-chat-box')];
+            chatBoxes.forEach(box => {
+                if(!box) return;
+                // إزالة رسالة الانتظار إن وجدت
+                if(box.innerHTML.includes('بانتظار') || box.innerHTML.includes('ابدأ بإرسال')) {
+                    box.innerHTML = '';
+                }
+                let msgClass = sender === 'الكاشير' ? 'text-amber-400 bg-amber-500/10 border-amber-500/20' : 'text-stone-200 bg-stone-800 border-stone-700';
+                box.innerHTML += `
+                    <div class="p-1.5 rounded border ${msgClass} text-[11px]">
+                        <strong>${sender}:</strong> ${text}
+                    </div>
+                `;
+                box.scrollTop = box.scrollHeight;
+            });
+            if (navigator.vibrate) navigator.vibrate(50);
+        }
+
+        function sendPosPreset(msg) {
+            appendMessage('الكاشير', msg);
+        }
+
+        function sendPosTypedMessage() {
+            let input = document.getElementById('pos-chat-input');
+            if(input.value.trim() === '') return;
+            appendMessage('الكاشير', input.value);
+            input.value = '';
+        }
+
+        function sendCustomerMessage() {
+            let input = document.getElementById('customer-chat-input');
+            if(input.value.trim() === '') return;
+            appendMessage('العميل (السيارة)', input.value);
+            input.value = '';
+        }
+
+        function updateFinalSummary() {
+            let summaryContainer = document.getElementById('final-items-summary');
+            summaryContainer.innerHTML = cart.map(i => `<div>• ${i.name} (×${i.qty})</div>`).join('');
+        }
+
+        function rateExperience(emoji) {
+            alert('شكراً لك على تقييمك للتجربة! 🤎');
+        }
+
+        function completeOrder() {
+            alert('تم تسليم الطلب بنجاح للعميل في الشباك!');
+            switchView('customer');
+            resetApp();
+        }
+
+        function resetApp() {
+            cart = [];
+            document.getElementById('customer-note').value = '';
+            document.getElementById('chat-box.innerHTML') = `<div class="text-stone-400 text-center italic text-[11px]">بانتظار تواصل الكاشير معك...</div>`;
+            goToScreen(1);
+        }
+    </script>
+</body>
+</html>
